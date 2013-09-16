@@ -3,4 +3,6 @@ packages
 pubspec.lock
 .project
 .buildlog
+*.o
+*.so
 
