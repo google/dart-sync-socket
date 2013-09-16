@@ -1,6 +1,7 @@
 name: sync_socket
-version: 0.0.1
+version: 0.0.2
 author: Marc Fisher <fisherii@google.com>
+description: A library
 environment:
   sdk: '>=0.7.2'
 dev_dependencies:
