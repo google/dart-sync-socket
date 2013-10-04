@@ -1,8 +1,8 @@
 name: sync_socket
-version: 0.0.2
+version: 0.0.3
 author: Marc Fisher <fisherii@google.com>
-description: A library
+description: Synchronous Socket and HTTP Client.
 environment:
-  sdk: '>=0.7.2'
+  sdk: '>=0.7.6'
 dev_dependencies:
-  unittest: '>=0.7.2'
+  unittest: '>=0.7.6'
