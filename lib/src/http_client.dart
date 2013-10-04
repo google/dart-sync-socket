@@ -380,7 +380,8 @@ class HttpClientResponseSync {
     try {
       while (!inHeader || !inBody ||
              contentRead + remainder.length < contentLength) {
-        var bytes = socket.readAsBytes(all: false);
+        var bytesToRead = contentLength < 4096 ? 4096 : contentLength;
+        var bytes = socket.readAsBytes(all: false, chunkSize: bytesToRead);
         if (bytes.length == 0) {
           break;
         }
