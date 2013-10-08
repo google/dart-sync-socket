@@ -315,14 +315,13 @@ class HttpClientResponseSync {
     bool inBody = false;
     int contentLength = 0;
     int contentRead = 0;
-    String remainder = '';
+    int processedLines = 0;
 
-    var lineTerminator = new RegExp('\r?\n');
-
-    var processLine = (String line) {
+    processLine(String line) {
       if (inBody) {
-        body.write(line);
-        body.write('\n');
+        body.writeln(line);
+        // TODO(DrMarcII): will eventually need to fix this
+        contentRead += line.length + 2;
         return;
       }
       if (inHeader) {
@@ -336,7 +335,7 @@ class HttpClientResponseSync {
         if (name == HttpHeaders.TRANSFER_ENCODING &&
             value.toLowerCase() != 'identity') {
           throw new UnsupportedError(
-          'only identity transfer encoding is accepted');
+              'only identity transfer encoding is accepted');
         }
         if (name == HttpHeaders.CONTENT_LENGTH) {
           contentLength = int.parse(value);
@@ -355,43 +354,30 @@ class HttpClientResponseSync {
       }
     };
 
-    var processChunk = (String chunk) {
-        int lastIndex = 0;
+    processLines(List<String> lines) {
+      for( ; processedLines < lines.length; processedLines++) {
+        processLine(lines[processedLines]);
+      }
+    }
 
-        while(lastIndex != -1 && lastIndex < chunk.length) {
-          int nextIndex = chunk.indexOf(lineTerminator, lastIndex);
-          if (nextIndex == -1) {
-            remainder = chunk.substring(lastIndex);
-            return ;
-          }
+    var sink = new ChunkedConversionSink.withCallback(processLines);
 
-          if (chunk[nextIndex] == '\r') {
-            nextIndex += 2;
-          } else {
-            nextIndex++;
-          }
-          if (inBody) {
-            contentRead += nextIndex - lastIndex;
-          }
-          processLine(chunk.substring(lastIndex, nextIndex));
-          lastIndex = nextIndex;
-        }
-      };
+    var lineSplitter =
+        const LineSplitter().startChunkedConversion(sink).asUtf8Sink(false);
+
     try {
-      while (!inHeader || !inBody ||
-             contentRead + remainder.length < contentLength) {
+      while (!inHeader || !inBody || contentRead < contentLength) {
         var bytesToRead = contentLength < 4096 ? 4096 : contentLength;
         var bytes = socket.readAsBytes(all: false, chunkSize: bytesToRead);
         if (bytes.length == 0) {
           break;
         }
-        processChunk(remainder + UTF8.decode(bytes));
-      }
-      if (!remainder.isEmpty) {
-        processLine(remainder);
+        lineSplitter.add(bytes);
       }
     } finally {
       socket.close();
+      lineSplitter.close();
+      sink.close();
     }
 
     return new HttpClientResponseSync._(

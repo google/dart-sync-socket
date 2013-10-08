@@ -52,7 +52,7 @@ class SocketSync {
    * Writes [obj].toString() to socket encoded with [encoding].
    */
   void writeAsString(Object obj, {Encoding encoding: UTF8}) {
-      writeAsBytes(encoding.encode(obj.toString()));
+    writeAsBytes(encoding.encode(obj.toString()));
   }
 
   /**
