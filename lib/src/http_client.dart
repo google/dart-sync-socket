@@ -56,7 +56,7 @@ class HttpClientRequestSync {
 
   final String method;
 
-  final String protocolVersion = '1.1';
+  final String protocolVersion = '1.0';
 
   final Uri uri;
 
@@ -367,12 +367,11 @@ class HttpClientResponseSync {
 
     try {
       while (!inHeader || !inBody || contentRead < contentLength) {
-        var bytesToRead = contentLength < 4096 ? 4096 : contentLength;
-        var bytes = socket.readAsBytes(all: false, chunkSize: bytesToRead);
-        if (bytes.length == 0) {
+        var bytes = socket.readAsBytes(all: false);
+        lineSplitter.add(bytes);
+        if (bytes.length < SocketSync.DEFAULT_CHUNK_SIZE) {
           break;
         }
-        lineSplitter.add(bytes);
       }
     } finally {
       socket.close();
