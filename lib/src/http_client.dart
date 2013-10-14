@@ -56,7 +56,7 @@ class HttpClientRequestSync {
 
   final String method;
 
-  final String protocolVersion = '1.0';
+  final String protocolVersion = '1.1';
 
   final Uri uri;
 
@@ -88,7 +88,7 @@ class HttpClientRequestSync {
    * Send the HTTP request and get the response.
    */
   HttpClientResponseSync close() {
-    _socket.writeAsString('$method ${uri.path} HTTP/1.1\r\n');
+    _socket.writeAsString('$method ${uri.path} HTTP/$protocolVersion\r\n');
     headers.forEach((name, values) {
       values.forEach((value) {
         _socket.writeAsString('$name: $value\r\n');
