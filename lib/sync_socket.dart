@@ -23,4 +23,5 @@ import 'dart:io'
 import 'dart-ext:sync_socket_extension';
 
 part 'src/http_client.dart';
+part 'src/line_decoder.dart';
 part 'src/socket.dart';
