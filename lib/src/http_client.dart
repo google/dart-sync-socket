@@ -43,6 +43,8 @@ class HttpClientSync {
  */
 class HttpClientRequestSync {
 
+  static const PROTOCOL_VERSION = '1.1';
+
   int get contentLength => hasBody ? _body.length : null;
 
   HttpHeaders _headers;
@@ -55,8 +57,6 @@ class HttpClientRequestSync {
   }
 
   final String method;
-
-  final String protocolVersion = '1.0';
 
   final Uri uri;
 
@@ -88,7 +88,7 @@ class HttpClientRequestSync {
    * Send the HTTP request and get the response.
    */
   HttpClientResponseSync close() {
-    _socket.writeAsString('$method ${uri.path} HTTP/1.1\r\n');
+    _socket.writeAsString('$method ${uri.path} HTTP/$PROTOCOL_VERSION\r\n');
     headers.forEach((name, values) {
       values.forEach((value) {
         _socket.writeAsString('$name: $value\r\n');
@@ -315,18 +315,19 @@ class HttpClientResponseSync {
     bool inBody = false;
     int contentLength = 0;
     int contentRead = 0;
-    int processedLines = 0;
 
-    processLine(String line) {
+    void processLine(String line, int bytesRead, _LineDecoder decoder) {
       if (inBody) {
-        body.writeln(line);
-        // TODO(DrMarcII): will eventually need to fix this
-        contentRead += line.length + 2;
+        body.write(line);
+        contentRead += bytesRead;
         return;
       }
       if (inHeader) {
         if (line.trim().isEmpty) {
           inBody = true;
+          if (contentLength > 0) {
+            decoder.expectedByteCount = contentLength;
+          }
           return;
         }
         int separator = line.indexOf(':');
@@ -354,29 +355,24 @@ class HttpClientResponseSync {
       }
     };
 
-    processLines(List<String> lines) {
-      for( ; processedLines < lines.length; processedLines++) {
-        processLine(lines[processedLines]);
-      }
-    }
-
-    var sink = new ChunkedConversionSink.withCallback(processLines);
-
-    var lineSplitter =
-        const LineSplitter().startChunkedConversion(sink).asUtf8Sink(false);
+    var lineDecoder = new _LineDecoder.withCallback(processLine);
 
     try {
-      while (!inHeader || !inBody || contentRead < contentLength) {
+      while (!inHeader || !inBody ||
+          contentRead + lineDecoder.bufferedBytes < contentLength) {
         var bytes = socket.readAsBytes(all: false);
-        lineSplitter.add(bytes);
-        if (bytes.length < SocketSync.DEFAULT_CHUNK_SIZE) {
+
+        if (bytes.length == 0) {
           break;
         }
+        lineDecoder.add(bytes);
       }
     } finally {
-      socket.close();
-      lineSplitter.close();
-      sink.close();
+      try {
+        lineDecoder.close();
+      } finally {
+        socket.close();
+      }
     }
 
     return new HttpClientResponseSync._(
