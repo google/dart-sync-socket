@@ -1,8 +1,9 @@
 part of sync.socket;
 
-const int LINE_TERMINATOR = 10;
+// '\n' character
+const int _LINE_TERMINATOR = 10;
 
-typedef void LineDecoderCallback(
+typedef void _LineDecoderCallback(
     String line, int bytesRead, _LineDecoder decoder);
 
 class _LineDecoder {
@@ -10,7 +11,7 @@ class _LineDecoder {
 
   int expectedByteCount = -1;
 
-  final LineDecoderCallback _callback;
+  final _LineDecoderCallback _callback;
 
   _LineDecoder.withCallback(this._callback);
 
@@ -21,7 +22,7 @@ class _LineDecoder {
       if (expectedByteCount > 0) {
         splitIndex = expectedByteCount - _unprocessedBytes.length;
       } else {
-        splitIndex = chunk.indexOf(LINE_TERMINATOR) + 1;
+        splitIndex = chunk.indexOf(_LINE_TERMINATOR) + 1;
       }
 
       if (splitIndex > 0 && splitIndex <= chunk.length) {

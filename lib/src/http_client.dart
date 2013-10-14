@@ -43,6 +43,8 @@ class HttpClientSync {
  */
 class HttpClientRequestSync {
 
+  static const PROTOCOL_VERSION = '1.1';
+
   int get contentLength => hasBody ? _body.length : null;
 
   HttpHeaders _headers;
@@ -55,8 +57,6 @@ class HttpClientRequestSync {
   }
 
   final String method;
-
-  final String protocolVersion = '1.1';
 
   final Uri uri;
 
@@ -88,7 +88,7 @@ class HttpClientRequestSync {
    * Send the HTTP request and get the response.
    */
   HttpClientResponseSync close() {
-    _socket.writeAsString('$method ${uri.path} HTTP/$protocolVersion\r\n');
+    _socket.writeAsString('$method ${uri.path} HTTP/$PROTOCOL_VERSION\r\n');
     headers.forEach((name, values) {
       values.forEach((value) {
         _socket.writeAsString('$name: $value\r\n');
@@ -368,8 +368,11 @@ class HttpClientResponseSync {
         lineDecoder.add(bytes);
       }
     } finally {
-      socket.close();
-      lineDecoder.close();
+      try {
+        lineDecoder.close();
+      } finally {
+        socket.close();
+      }
     }
 
     return new HttpClientResponseSync._(
