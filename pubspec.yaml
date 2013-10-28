@@ -1,8 +1,8 @@
 name: sync_socket
-version: 0.0.4
+version: 0.0.5
 author: Marc Fisher <fisherii@google.com>
 description: Synchronous Socket and HTTP Client.
 environment:
-  sdk: '>=0.8.1'
+  sdk: '>=0.8.7'
 dev_dependencies:
-  unittest: '>=0.8.1'
+  unittest: '>=0.8.7'
