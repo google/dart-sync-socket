@@ -28,10 +28,11 @@ void main() {
   int port;
 
   // start echo server
-  setUp(() => spawnFunction(startSimpleServer)
-      .call('')
-      .then((_p) => port = _p)
-  );
+  setUp(() {
+    var response = new ReceivePort();
+    Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
+    return response.first.then((_p) => port = _p);
+  });
 
   test('simple connect/write/read', () {
     var socket = new SocketSync('localhost', port);
@@ -41,19 +42,18 @@ void main() {
   });
 }
 
-void startSimpleServer() {
-  port.receive((_, send) {
-    io.ServerSocket.bind(io.InternetAddress.ANY_IP_V4, 0).then((server) {
-      server.listen((socket) {
-        socket.listen((data) {
-          var str = new String.fromCharCodes(data);
-          socket.write(str);
-          if (str.endsWith('close')) {
-            socket.close();
-          }
-        });
+void startSimpleServer(SendPort send) {
+  io.ServerSocket.bind(io.InternetAddress.ANY_IP_V4, 0).then((server) {
+    server.listen((socket) {
+      socket.listen((data) {
+        var str = new String.fromCharCodes(data);
+        socket.write(str);
+        if (str.endsWith('close')) {
+          socket.close();
+        }
       });
-      send.send(server.port);
     });
+    send.send(server.port);
   });
 }
+

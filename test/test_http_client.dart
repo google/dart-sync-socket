@@ -28,10 +28,11 @@ void main() {
 
   int port;
 
-  test('Setup: start http server', () => spawnFunction(startSimpleServer)
-      .call('')
-      .then((_p) => port = _p)
-  );
+  setUp(() {
+    var response = new ReceivePort();
+    Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
+    return response.first.then((_p) => port = _p);
+  });
 
   test('simple get', () {
     HttpClientSync client = new HttpClientSync();
@@ -43,15 +44,13 @@ void main() {
   });
 }
 
-void startSimpleServer() {
-  port.receive((_, send) {
-    io.HttpServer.bind(io.InternetAddress.ANY_IP_V4, 0)
-        .then((io.HttpServer server) {
-          server.listen((io.HttpRequest request) {
-            request.response.statusCode = io.HttpStatus.NO_CONTENT;
-            request.response.close();
-          });
-          send.send(server.port);
+void startSimpleServer(SendPort send) {
+  io.HttpServer.bind(io.InternetAddress.ANY_IP_V4, 0)
+      .then((io.HttpServer server) {
+        server.listen((io.HttpRequest request) {
+          request.response.statusCode = io.HttpStatus.NO_CONTENT;
+          request.response.close();
         });
-  });
+        send.send(server.port);
+      });
 }
