@@ -15,11 +15,23 @@ limitations under the License.
 */
 
 #include <sys/types.h>
+#ifdef WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
+#include <wspiapi.h>
+#include <io.h>
+#pragma comment(lib, "Ws2_32.lib")
+#define write(fd, buf, len)	send(fd, buf, len, 0)
+#define read(fd, buf, len)	recv(fd, (char *) buf, len, 0)
+#define close closesocket
+#else
 #include <sys/socket.h>
 #include <netdb.h>
+#include <unistd.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "dart_api.h"
@@ -68,19 +80,31 @@ void sync_connect(Dart_NativeArguments args) {
   for (ap = addrs; ap != NULL; ap = ap->ai_next) {
     sockfd = socket(ap->ai_family, ap->ai_socktype, ap->ai_protocol);
 
+#ifdef WIN32
+    if (sockfd == INVALID_SOCKET) {
+#else
     if (sockfd < 0) {
+#endif
       continue;
     }
     if (connect(sockfd, ap->ai_addr, ap->ai_addrlen) != -1) {
       break;
     }
     close(sockfd);
+#ifdef WIN32
+    sockfd = INVALID_SOCKET;
+#else
     sockfd = -1;
+#endif
   }
 
   freeaddrinfo(addrs);
 
-  if (sockfd < 0) {
+#ifdef WIN32
+    if (sockfd == INVALID_SOCKET) {
+#else
+    if (sockfd < 0) {
+#endif
     Dart_Handle error = NewDartExceptionWithMessage(
         "dart:io", "SocketException", "Unable to connect to host");
     if (Dart_IsError(error)) Dart_PropagateError(error);
