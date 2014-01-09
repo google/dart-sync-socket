@@ -36,7 +36,9 @@ limitations under the License.
 
 #include "dart_api.h"
 
-Dart_NativeFunction ResolveName(Dart_Handle name, int argc);
+Dart_NativeFunction ResolveName(Dart_Handle name,
+                                int argc,
+                                bool *auto_setup_scope);
 Dart_Handle NewDartExceptionWithMessage(const char* library_url,
                                         const char* exception_name,
                                         const char* message);
@@ -210,7 +212,9 @@ void sync_write(Dart_NativeArguments args) {
   free(bytes);
 }
 
-Dart_NativeFunction ResolveName(Dart_Handle name, int argc) {
+Dart_NativeFunction ResolveName(Dart_Handle name,
+                                int argc,
+                                bool *auto_setup_scope) {
   if (!Dart_IsString(name)) return NULL;
   Dart_NativeFunction result = NULL;
   const char* cname;
