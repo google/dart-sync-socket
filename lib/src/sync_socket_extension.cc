@@ -130,10 +130,12 @@ void sync_close(Dart_NativeArguments args) {
   close(static_cast<int>(sockfd));
 }
 
-void freeData(Dart_WeakPersistentHandle handle, void* buffer) {
+void freeData(Dart_Isolate isolate,
+              Dart_WeakPersistentHandle handle,
+              void* buffer) {
   free(buffer);
   if (handle != NULL) {
-    Dart_DeleteWeakPersistentHandle(handle);
+    Dart_DeleteWeakPersistentHandle(isolate, handle);
   }
 }
 
