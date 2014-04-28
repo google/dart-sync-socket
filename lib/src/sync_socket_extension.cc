@@ -47,7 +47,7 @@ DART_EXPORT Dart_Handle sync_socket_extension_Init(Dart_Handle parent_library) {
   if (Dart_IsError(parent_library)) return parent_library;
 
   Dart_Handle result_code =
-      Dart_SetNativeResolver(parent_library, ResolveName);
+      Dart_SetNativeResolver(parent_library, ResolveName, NULL);
   if (Dart_IsError(result_code)) return result_code;
 
   return Dart_Null();
@@ -130,13 +130,10 @@ void sync_close(Dart_NativeArguments args) {
   close(static_cast<int>(sockfd));
 }
 
-void freeData(Dart_Isolate isolate,
+void freeData(void* isolate_callback_data,
               Dart_WeakPersistentHandle handle,
               void* buffer) {
   free(buffer);
-  if (handle != NULL) {
-    Dart_DeleteWeakPersistentHandle(isolate, handle);
-  }
 }
 
 void sync_read(Dart_NativeArguments args) {
@@ -173,7 +170,7 @@ void sync_read(Dart_NativeArguments args) {
       Dart_NewExternalTypedData(Dart_TypedData_kUint8, data, bytes_read);
   if (Dart_IsError(result)) Dart_PropagateError(result);
 
-  Dart_NewWeakPersistentHandle(result, data, freeData);
+  Dart_NewWeakPersistentHandle(result, data, bytes_read, freeData);
 
   Dart_SetReturnValue(args, result);
 }
@@ -255,3 +252,4 @@ Dart_Handle NewDartExceptionWithMessage(const char* library_url,
     return Dart_New(type, Dart_Null(), 0, NULL);
   }
 }
+
