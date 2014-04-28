@@ -1,5 +1,5 @@
 name: sync_socket
-version: 0.0.6
+version: 0.0.7
 author: Marc Fisher <fisherii@google.com>
 description: Synchronous Socket and HTTP Client.
 environment:
