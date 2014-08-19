@@ -320,9 +320,7 @@ class HttpClientResponseSync {
       if (inBody) {
         body.write(line);
         contentRead += bytesRead;
-        return;
-      }
-      if (inHeader) {
+      } else if (inHeader) {
         if (line.trim().isEmpty) {
           inBody = true;
           if (contentLength > 0) {
@@ -345,15 +343,15 @@ class HttpClientResponseSync {
           headers[name] = [];
         }
         headers[name].add(value);
-        return;
-      }
-      if (line.startsWith('HTTP/1.1')) {
+      } else if (line.startsWith('HTTP/1.1') || line.startsWith('HTTP/1.0')) {
         statusCode = int.parse(line.substring(
-            'HTTP/1.1 '.length, 'HTTP/1.1 '.length + 3));
-        reasonPhrase = line.substring('HTTP/1.1 xxx '.length);
+            'HTTP/1.x '.length, 'HTTP/1.x xxx'.length));
+        reasonPhrase = line.substring('HTTP/1.x xxx '.length);
         inHeader = true;
+      } else {
+        throw new UnsupportedError('unsupported http response format');
       }
-    };
+    }
 
     var lineDecoder = new _LineDecoder.withCallback(processLine);
 
