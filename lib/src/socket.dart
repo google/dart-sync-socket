@@ -24,7 +24,6 @@ List<int> _read(int sockfd, int length) native 'read';
  * A simple synchronous socket.
  */
 class SocketSync {
-
   static const int DEFAULT_CHUNK_SIZE = 4096;
 
   int _sockfd;
@@ -81,8 +80,8 @@ class SocketSync {
 
   void close() {
     if (_open) {
-       _close(_sockfd);
-       _open = false;
+      _close(_sockfd);
+      _open = false;
     }
   }
 

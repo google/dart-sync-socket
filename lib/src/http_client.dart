@@ -40,7 +40,6 @@ class HttpClientSync {
  * HTTP request for a synchronous client connection.
  */
 class HttpClientRequestSync {
-
   static const PROTOCOL_VERSION = '1.1';
 
   int get contentLength => hasBody ? _body.length : null;
@@ -102,7 +101,6 @@ class HttpClientRequestSync {
 }
 
 class _HttpClientRequestSyncHeaders implements HttpHeaders {
-
   Map<String, List> _headers = <String, List<String>>{};
 
   final HttpClientRequestSync _request;
@@ -114,23 +112,23 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
   List<String> operator [](String name) {
     switch (name) {
       case HttpHeaders.ACCEPT_CHARSET:
-        return [ 'utf-8' ];
+        return ['utf-8'];
       case HttpHeaders.ACCEPT_ENCODING:
-        return [ 'identity' ];
+        return ['identity'];
       case HttpHeaders.CONNECTION:
-        return [ 'close' ];
+        return ['close'];
       case HttpHeaders.CONTENT_LENGTH:
         if (!_request.hasBody) {
           return null;
         }
-        return [ contentLength ];
+        return [contentLength];
       case HttpHeaders.CONTENT_TYPE:
         if (contentType == null) {
           return null;
         }
-        return [ contentType.toString() ];
+        return [contentType.toString()];
       case HttpHeaders.HOST:
-        return [ '$host:$port' ];
+        return ['$host:$port'];
       default:
         var values = _headers[name];
         if (values == null || values.isEmpty) {
@@ -176,14 +174,14 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
       case HttpHeaders.HOST:
         throw new UnsupportedError('Unsupported or immutable property: $name');
       case HttpHeaders.CONTENT_TYPE:
-        if(contentType == value) {
+        if (contentType == value) {
           contentType = null;
         }
         break;
       default:
         if (_headers[name] != null) {
           _headers[name].remove(value);
-          if(_headers[name].isEmpty) {
+          if (_headers[name].isEmpty) {
             _headers.remove(name);
           }
         }
@@ -243,7 +241,8 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
       HttpHeaders.CONNECTION,
       HttpHeaders.CONTENT_LENGTH,
       HttpHeaders.CONTENT_TYPE,
-      HttpHeaders.HOST ].forEach(forEachFunc);
+      HttpHeaders.HOST
+    ].forEach(forEachFunc);
     _headers.keys.forEach(forEachFunc);
   }
 
@@ -371,8 +370,8 @@ class HttpClientResponseSync {
         }
         headers[name].add(value);
       } else if (line.startsWith('HTTP/1.1') || line.startsWith('HTTP/1.0')) {
-        statusCode = int.parse(line.substring(
-            'HTTP/1.x '.length, 'HTTP/1.x xxx'.length));
+        statusCode = int
+            .parse(line.substring('HTTP/1.x '.length, 'HTTP/1.x xxx'.length));
         reasonPhrase = line.substring('HTTP/1.x xxx '.length);
         inHeader = true;
       } else {
@@ -383,7 +382,8 @@ class HttpClientResponseSync {
     var lineDecoder = new _LineDecoder.withCallback(processLine);
 
     try {
-      while (!inHeader || !inBody ||
+      while (!inHeader ||
+          !inBody ||
           contentRead + lineDecoder.bufferedBytes < contentLength) {
         var bytes = socket.readAsBytes(all: false);
 
