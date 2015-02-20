@@ -45,7 +45,7 @@ echo Building dart-sync-socket for platform $PLATFORM/$MACOS_ARCH
 case "$PLATFORM" in
   (Darwin)
     g++ -fPIC -I $DART_SDK_DIR/include -c sync_socket_extension.cc -arch $MACOS_ARCH
-    gcc -shared -Wl,-install_name,libsync_socket_extension.dylib,-undefined,dynamic_lookup,-arch,$DART_ARCH -o \
+    gcc -shared -Wl,-install_name,libsync_socket_extension.dylib,-undefined,dynamic_lookup,-arch,$MACOS_ARCH -o \
       ../libsync_socket_extension.dylib sync_socket_extension.o
     ;;
   (Linux)
