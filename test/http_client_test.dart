@@ -12,33 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+library sync_socket.http_client_test;
+
 import 'dart:async';
 import 'dart:io' as io;
 import 'dart:isolate';
 
 import 'package:sync_socket/sync_socket.dart';
-import 'package:unittest/compact_vm_config.dart';
+import 'package:unittest/vm_config.dart';
 import 'package:unittest/unittest.dart';
 
 
 void main() {
-  useCompactVMConfiguration();
+  useVMConfiguration();
 
   int port;
 
-  setUp(() {
-    var response = new ReceivePort();
-    Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
-    return response.first.then((_p) => port = _p);
-  });
+  group('HttpClientSync', () {
+    setUp(() {
+      var response = new ReceivePort();
+      Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
+      return response.first.then((_p) => port = _p);
+    });
 
-  test('simple get', () {
-    HttpClientSync client = new HttpClientSync();
-    var request = client.getUrl(new Uri.http('localhost:$port', '/'));
-    var response = request.close();
+    test('simple get', () {
+      HttpClientSync client = new HttpClientSync();
+      var request = client.getUrl(new Uri.http('localhost:$port', '/'));
+      var response = request.close();
 
-    expect(response.statusCode, io.HttpStatus.NO_CONTENT);
-    expect(response.body, '');
+      expect(response.statusCode, io.HttpStatus.NO_CONTENT);
+      expect(response.body, '');
+    });
   });
 }
 

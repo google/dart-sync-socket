@@ -12,31 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+library sync_socket.sync_socket_test;
+
 import 'dart:async';
 import 'dart:io' as io;
 import 'dart:isolate';
 
 import 'package:sync_socket/sync_socket.dart';
-import 'package:unittest/compact_vm_config.dart';
+import 'package:unittest/vm_config.dart';
 import 'package:unittest/unittest.dart';
 
 void main() {
-  useCompactVMConfiguration();
+  useVMConfiguration();
 
   int port;
 
-  // start echo server
-  setUp(() {
-    var response = new ReceivePort();
-    Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
-    return response.first.then((_p) => port = _p);
-  });
+  group('SocketSync', () {
+    // start echo server
+    setUp(() {
+      var response = new ReceivePort();
+      Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
+      return response.first.then((_p) => port = _p);
+    });
 
-  test('simple connect/write/read', () {
-    var socket = new SocketSync('localhost', port);
-    socket.writeAsString('close');
-    expect(socket.readAsString(), 'close');
-    socket.close();
+    test('simple connect/write/read', () {
+      var socket = new SocketSync('localhost', port);
+      socket.writeAsString('close');
+      expect(socket.readAsString(), 'close');
+      socket.close();
+    });
   });
 }
 
