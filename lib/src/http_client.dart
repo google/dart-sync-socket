@@ -110,6 +110,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
 
   _HttpClientRequestSyncHeaders(this._request);
 
+  @override
   List<String> operator [](String name) {
     switch (name) {
       case HttpHeaders.ACCEPT_CHARSET:
@@ -139,6 +140,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
     }
   }
 
+  @override
   void add(String name, Object value) {
     switch (name) {
       case HttpHeaders.ACCEPT_CHARSET:
@@ -161,6 +163,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
     }
   }
 
+  @override
   void remove(String name, Object value) {
     switch (name) {
       case HttpHeaders.ACCEPT_CHARSET:
@@ -187,6 +190,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
     }
   }
 
+  @override
   void removeAll(String name) {
     switch (name) {
       case HttpHeaders.ACCEPT_CHARSET:
@@ -206,11 +210,13 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
     }
   }
 
+  @override
   void set(String name, Object value) {
     removeAll(name);
     add(name, value);
   }
 
+  @override
   String value(String name) {
     var val = this[name];
     if (val == null || val.isEmpty) {
@@ -222,6 +228,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
     }
   }
 
+  @override
   void forEach(void f(String name, List<String> values)) {
     var forEachFunc = (name) {
       var values = this[name];
@@ -240,57 +247,79 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
     _headers.keys.forEach(forEachFunc);
   }
 
+  @override
   bool get chunkedTransferEncoding => null;
 
+  @override
   void set chunkedTransferEncoding(bool _chunkedTransferEncoding) {
     throw new UnsupportedError('chunked transfer is unsupported');
   }
 
+  @override
   int get contentLength => _request.contentLength;
 
+  @override
   void set contentLength(int _contentLength) {
     throw new UnsupportedError('content length is automatically set');
   }
 
+  @override
   void set date(DateTime _date) {
     throw new UnsupportedError('date is unsupported');
   }
 
+  @override
   DateTime get date => null;
 
+  @override
   void set expires(DateTime _expires) {
     throw new UnsupportedError('expires is unsupported');
   }
 
+  @override
   DateTime get expires => null;
 
+  @override
   void set host(String _host) {
     throw new UnsupportedError('host is automatically set');
   }
 
+  @override
   String get host => _request.uri.host;
 
+  @override
   DateTime get ifModifiedSince => null;
 
+  @override
   void set ifModifiedSince(DateTime _ifModifiedSince) {
     throw new UnsupportedError('if modified since is unsupported');
   }
 
+  @override
   void noFolding(String name) {
     throw new UnsupportedError('no folding is unsupported');
   }
-
+  @override
   bool get persistentConnection => false;
 
+  @override
   void set persistentConnection(bool _persistentConnection) {
     throw new UnsupportedError('persistence connections are unsupported');
   }
 
+  @override
   void set port(int _port) {
     throw new UnsupportedError('port is automatically set');
   }
 
+  @override
   int get port => _request.uri.port;
+
+  @override
+  void clear() {
+    contentType = null;
+    _headers.clear();
+  }
 }
 
 /**
@@ -388,18 +417,23 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
 
   _HttpClientResponseSyncHeaders(this._headers);
 
+  @override
   List<String> operator [](String name) => _headers[name];
 
+  @override
   void add(String name, Object value) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   bool get chunkedTransferEncoding => null;
 
+  @override
   void set chunkedTransferEncoding(bool _chunkedTransferEncoding) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   int get contentLength {
     var val = value(HttpHeaders.CONTENT_LENGTH);
     if (val != null) {
@@ -408,10 +442,12 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     return val;
   }
 
+  @override
   void set contentLength(int _contentLength) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   ContentType get contentType {
     var val = value(HttpHeaders.CONTENT_TYPE);
     if (val != null) {
@@ -420,14 +456,17 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     return null;
   }
 
+  @override
   void set contentType(ContentType _contentType) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   void set date(DateTime _date) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   DateTime get date {
     var val = value(HttpHeaders.DATE);
     if (val != null) {
@@ -436,10 +475,12 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     return null;
   }
 
+  @override
   void set expires(DateTime _expires) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   DateTime get expires {
     var val = value(HttpHeaders.EXPIRES);
     if (val != null) {
@@ -448,12 +489,15 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     return null;
   }
 
+  @override
   void forEach(void f(String name, List<String> values)) => _headers.forEach(f);
 
+  @override
   void set host(String _host) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   String get host {
     var val = value(HttpHeaders.HOST);
     if (val != null) {
@@ -462,6 +506,7 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     return null;
   }
 
+  @override
   DateTime get ifModifiedSince {
     var val = value(HttpHeaders.IF_MODIFIED_SINCE);
     if (val != null) {
@@ -470,24 +515,30 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     return null;
   }
 
+  @override
   void set ifModifiedSince(DateTime _ifModifiedSince) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   void noFolding(String name) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   bool get persistentConnection => false;
 
+  @override
   void set persistentConnection(bool _persistentConnection) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   void set port(int _port) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   int get port {
     var val = value(HttpHeaders.HOST);
     if (val != null) {
@@ -495,18 +546,22 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     }
     return null;
   }
+  @override
   void remove(String name, Object value) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   void removeAll(String name) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   void set(String name, Object value) {
     throw new UnsupportedError('Response headers are immutable');
   }
 
+  @override
   String value(String name) {
     var val = this[name];
     if (val == null || val.isEmpty) {
@@ -516,5 +571,10 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
     } else {
       throw new HttpException('header $name has more than one value');
     }
+  }
+
+  @override
+  void clear() {
+    throw new UnsupportedError('Response headers are immutable');
   }
 }
