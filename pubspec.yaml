@@ -1,6 +1,6 @@
 name: sync_socket
 version: 1.0.1
-author: Marc Fisher <fisherii@google.com>
+author: Google Inc.
 description: Synchronous Socket and HTTP Client.
 environment:
   sdk: '>=1.8.0 <2.0.0'
