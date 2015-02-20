@@ -1,6 +1,8 @@
 Dart Sync Socket
 ================
 
+[![Build Status](https://travis-ci.org/google/dart-sync-socket.svg?branch=master)](https://travis-ci.org/google/dart-sync-socket)
+
 A Dart VM Native Extension and supporting Dart libraries that provide
 synchronous socket and HTTP client support.
 

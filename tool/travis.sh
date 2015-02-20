@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2013 Google Inc. All Rights Reserved.
+# Copyright 2015 Google Inc. All Rights Reserved.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 # Fast fail the script on failures.
 set -e
 
+# Build the native extension
+tool/build.sh
+
 # Verify that the libraries are error free.
 dartanalyzer --fatal-warnings \
-  lib/webdriver.dart \
-  test/webdriver_test.dart
+  lib/sync_socket.dart \
+  test/http_client_test.dart \
+  test/sync_socket_test.dart
 
-if [ "$TRAVIS" ]; then
-  # Start chromedriver.
-  chromedriver --port=4444 --url-base=wd/hub &
-  
-  # Run test/webdriver_test.dart.
-  dart test/webdriver_test.dart
-fi
+# Run tests.
+dart test/all_tests.dart
