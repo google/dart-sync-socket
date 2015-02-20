@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-library sync.socket;
+library sync_socket.all_tests;
 
-import 'dart:convert';
-import 'dart:io'
-    show BytesBuilder, ContentType, HttpException, HttpHeaders, HttpStatus;
+import 'http_client_test.dart' as http_client;
+import 'sync_socket_test.dart' as sync_socket;
 
-import 'dart-ext:sync_socket_extension';
-
-part 'src/http_client.dart';
-part 'src/line_decoder.dart';
-part 'src/socket.dart';
+main() {
+  sync_socket.main();
+  http_client.main();
+}
