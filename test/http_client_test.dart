@@ -22,7 +22,6 @@ import 'package:sync_socket/sync_socket.dart';
 import 'package:unittest/vm_config.dart';
 import 'package:unittest/unittest.dart';
 
-
 void main() {
   useVMConfiguration();
 
@@ -47,12 +46,13 @@ void main() {
 }
 
 void startSimpleServer(SendPort send) {
-  io.HttpServer.bind(io.InternetAddress.ANY_IP_V4, 0)
+  io.HttpServer
+      .bind(io.InternetAddress.ANY_IP_V4, 0)
       .then((io.HttpServer server) {
-        server.listen((io.HttpRequest request) {
-          request.response.statusCode = io.HttpStatus.NO_CONTENT;
-          request.response.close();
-        });
-        send.send(server.port);
-      });
+    server.listen((io.HttpRequest request) {
+      request.response.statusCode = io.HttpStatus.NO_CONTENT;
+      request.response.close();
+    });
+    send.send(server.port);
+  });
 }
