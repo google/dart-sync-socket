@@ -31,7 +31,7 @@ void main() {
   group('HttpClientSync', () {
     setUp(() {
       var response = new ReceivePort();
-      Future<Isolate> remote = Isolate.spawn(startSimpleServer, response.sendPort);
+      Isolate.spawn(startSimpleServer, response.sendPort);
       return response.first.then((_p) => port = _p);
     });
 
