@@ -1,9 +1,9 @@
 name: sync_socket
-version: 1.0.1+1
+version: 1.0.2
 author: Google Inc.
 description: Synchronous Socket and HTTP Client.
 homepage: https://github.com/google/dart-sync-socket
 environment:
   sdk: '>=1.8.0 <2.0.0'
 dev_dependencies:
-  unittest: '^0.11.5+4'
+  test: '^0.12.0-rc.1'

@@ -6,3 +6,4 @@ pubspec.lock
 *.o
 *.so
 .idea/
+.pub/

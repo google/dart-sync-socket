@@ -20,8 +20,8 @@
 #include <wspiapi.h>
 #include <io.h>
 #pragma comment(lib, "Ws2_32.lib")
-#define write(fd, buf, len)	send(fd, buf, len, 0)
-#define read(fd, buf, len)	recv(fd, (char *) buf, len, 0)
+#define write(fd, buf, len) send(fd, buf, len, 0)
+#define read(fd, buf, len) recv(fd, (char*)buf, len, 0)
 #define close closesocket
 #else
 #include <sys/socket.h>
@@ -34,9 +34,8 @@
 
 #include "dart_api.h"
 
-Dart_NativeFunction ResolveName(Dart_Handle name,
-                                int argc,
-                                bool *auto_setup_scope);
+Dart_NativeFunction ResolveName(Dart_Handle name, int argc,
+                                bool* auto_setup_scope);
 Dart_Handle NewDartExceptionWithMessage(const char* library_url,
                                         const char* exception_name,
                                         const char* message);
@@ -53,7 +52,7 @@ DART_EXPORT Dart_Handle sync_socket_extension_Init(Dart_Handle parent_library) {
 
 void sync_connect(Dart_NativeArguments args) {
   const char *hostname, *port;  // args[0] args[1]
-  int sockfd;  // return
+  int sockfd;                   // return
 
   struct addrinfo *addrs, *ap;
   struct addrinfo hints;
@@ -101,9 +100,9 @@ void sync_connect(Dart_NativeArguments args) {
   freeaddrinfo(addrs);
 
 #ifdef WIN32
-    if (sockfd == INVALID_SOCKET) {
+  if (sockfd == INVALID_SOCKET) {
 #else
-    if (sockfd < 0) {
+  if (sockfd < 0) {
 #endif
     Dart_Handle error = NewDartExceptionWithMessage(
         "dart:io", "SocketException", "Unable to connect to host");
@@ -111,7 +110,7 @@ void sync_connect(Dart_NativeArguments args) {
     Dart_ThrowException(error);
   }
 
-  Dart_Handle retval = Dart_NewInteger((int64_t) sockfd);
+  Dart_Handle retval = Dart_NewInteger((int64_t)sockfd);
 
   if (Dart_IsError(retval)) Dart_PropagateError(retval);
 
@@ -128,14 +127,13 @@ void sync_close(Dart_NativeArguments args) {
   close(static_cast<int>(sockfd));
 }
 
-void freeData(void* isolate_callback_data,
-              Dart_WeakPersistentHandle handle,
+void freeData(void* isolate_callback_data, Dart_WeakPersistentHandle handle,
               void* buffer) {
   free(buffer);
 }
 
 void sync_read(Dart_NativeArguments args) {
-  int64_t sockfd;  // args[0]
+  int64_t sockfd;   // args[0]
   uint64_t length;  // args[1]
   uint8_t *buffer, *data;
   int bytes_read;
@@ -148,7 +146,7 @@ void sync_read(Dart_NativeArguments args) {
   handle = Dart_IntegerToUint64(Dart_GetNativeArgument(args, 1), &length);
   if (Dart_IsError(handle)) Dart_PropagateError(handle);
 
-  buffer = reinterpret_cast<uint8_t *>(malloc(length * sizeof(uint8_t)));
+  buffer = reinterpret_cast<uint8_t*>(malloc(length * sizeof(uint8_t)));
 
   bytes_read = read(static_cast<int>(sockfd), buffer, static_cast<int>(length));
 
@@ -160,7 +158,7 @@ void sync_read(Dart_NativeArguments args) {
     Dart_ThrowException(error);
   }
 
-  data = reinterpret_cast<uint8_t *>(malloc(bytes_read * sizeof(uint8_t)));
+  data = reinterpret_cast<uint8_t*>(malloc(bytes_read * sizeof(uint8_t)));
   memcpy(data, buffer, bytes_read);
   free(buffer);
 
@@ -190,7 +188,7 @@ void sync_write(Dart_NativeArguments args) {
   handle = Dart_ListLength(list, &length);
   if (Dart_IsError(handle)) Dart_PropagateError(handle);
 
-  bytes = reinterpret_cast<char *>(malloc(length * sizeof(char)));
+  bytes = reinterpret_cast<char*>(malloc(length * sizeof(char)));
 
   for (i = 0; i < length; i++) {
     handle = Dart_IntegerToInt64(Dart_ListGetAt(list, i), &byte);
@@ -209,9 +207,8 @@ void sync_write(Dart_NativeArguments args) {
   free(bytes);
 }
 
-Dart_NativeFunction ResolveName(Dart_Handle name,
-                                int argc,
-                                bool *auto_setup_scope) {
+Dart_NativeFunction ResolveName(Dart_Handle name, int argc,
+                                bool* auto_setup_scope) {
   if (!Dart_IsString(name)) return NULL;
   Dart_NativeFunction result = NULL;
   const char* cname;
@@ -232,9 +229,9 @@ Dart_Handle NewDartExceptionWithMessage(const char* library_url,
                                         const char* exception_name,
                                         const char* message) {
   // Create a Dart Exception object with a message.
-  Dart_Handle type = Dart_GetType(Dart_LookupLibrary(
-      Dart_NewStringFromCString(library_url)),
-      Dart_NewStringFromCString(exception_name), 0, NULL);
+  Dart_Handle type =
+      Dart_GetType(Dart_LookupLibrary(Dart_NewStringFromCString(library_url)),
+                   Dart_NewStringFromCString(exception_name), 0, NULL);
 
   if (Dart_IsError(type)) {
     Dart_PropagateError(type);
@@ -250,4 +247,3 @@ Dart_Handle NewDartExceptionWithMessage(const char* library_url,
     return Dart_New(type, Dart_Null(), 0, NULL);
   }
 }
-

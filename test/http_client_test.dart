@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+@TestOn('vm')
 library sync_socket.http_client_test;
 
-import 'dart:async';
 import 'dart:io' as io;
 import 'dart:isolate';
 
 import 'package:sync_socket/sync_socket.dart';
-import 'package:unittest/vm_config.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 void main() {
-  useVMConfiguration();
-
   int port;
 
   group('HttpClientSync', () {
