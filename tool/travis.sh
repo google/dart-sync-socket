@@ -27,4 +27,4 @@ dartanalyzer --fatal-warnings \
   test/sync_socket_test.dart
 
 # Run tests.
-dart test/all_tests.dart
+pub run test -p vm -r expanded
