@@ -1,7 +1,6 @@
 name: sync_socket
 version: 1.0.2+1
-author:
-  - Marc Fisher II <fisherii@google.com>
+author: Marc Fisher II <fisherii@google.com>
 description: Synchronous Socket and HTTP Client.
 homepage: https://github.com/google/dart-sync-socket
 environment:
