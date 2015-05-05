@@ -21,10 +21,8 @@ set -e
 tool/build.sh
 
 # Verify that the libraries are error free.
-dartanalyzer --fatal-warnings \
-  lib/sync_socket.dart \
-  test/http_client_test.dart \
-  test/sync_socket_test.dart
+grep -Rl --include "*.dart" --exclude-dir="packages" '^library .*;$' lib/ test/ | \
+    xargs dartanalyzer --fatal-warnings
 
 # Run tests.
 pub run test -p vm -r expanded
