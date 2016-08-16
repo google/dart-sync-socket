@@ -121,7 +121,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
         if (!_request.hasBody) {
           return null;
         }
-        return [contentLength];
+        return [contentLength.toString()];
       case HttpHeaders.CONTENT_TYPE:
         if (contentType == null) {
           return null;
@@ -436,10 +436,7 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
   @override
   int get contentLength {
     var val = value(HttpHeaders.CONTENT_LENGTH);
-    if (val != null) {
-      return int.parse(val, onError: (_) => null);
-    }
-    return val;
+    return int.parse(val, onError: (_) => null);
   }
 
   @override
