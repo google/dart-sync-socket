@@ -209,11 +209,6 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
   }
 
   @override
-  void clear() {
-    _headers.clear();
-  }
-
-  @override
   void set(String name, Object value) {
     removeAll(name);
     add(name, value);
@@ -496,11 +491,6 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
 
   @override
   void forEach(void f(String name, List<String> values)) => _headers.forEach(f);
-  
-  @override
-  void clear() {
-    _headers.clear();
-  }
 
   @override
   void set host(String _host) {
