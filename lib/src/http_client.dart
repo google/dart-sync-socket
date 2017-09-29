@@ -436,10 +436,7 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
   @override
   int get contentLength {
     var val = value(HttpHeaders.CONTENT_LENGTH);
-    if (val != null) {
-      return int.parse(val, onError: (_) => null);
-    }
-    return int.parse(val);
+    return int.parse(val, onError: (_) => null);
   }
 
   @override
