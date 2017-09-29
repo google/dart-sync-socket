@@ -16,7 +16,7 @@ library sync.socket;
 
 import 'dart:convert';
 import 'dart:io'
-    show BytesBuilder, ContentType, HttpException, HttpHeaders, HttpStatus;
+    show BytesBuilder, ContentType, HttpException, HttpHeaders;
 
 import 'dart-ext:sync_socket_extension';
 
