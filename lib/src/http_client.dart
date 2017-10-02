@@ -121,7 +121,7 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
         if (!_request.hasBody) {
           return null;
         }
-        return [contentLength];
+        return [contentLength.toString()];
       case HttpHeaders.CONTENT_TYPE:
         if (contentType == null) {
           return null;
@@ -228,12 +228,12 @@ class _HttpClientRequestSyncHeaders implements HttpHeaders {
 
   @override
   void forEach(void f(String name, List<String> values)) {
-    var forEachFunc = (name) {
+    void forEachFunc(name) {
       var values = this[name];
       if (values != null && values.isNotEmpty) {
         f(name, values);
       }
-    };
+    }
 
     [
       HttpHeaders.ACCEPT_CHARSET,
@@ -436,10 +436,7 @@ class _HttpClientResponseSyncHeaders implements HttpHeaders {
   @override
   int get contentLength {
     var val = value(HttpHeaders.CONTENT_LENGTH);
-    if (val != null) {
-      return int.parse(val, onError: (_) => null);
-    }
-    return val;
+    return int.parse(val, onError: (_) => null);
   }
 
   @override
